@@ -45,8 +45,10 @@
       return (
         this.hasRowConflictAt(rowIndex) ||
         this.hasColConflictAt(colIndex) ||
-        this.hasMajorDiagonalConflictAt(this._getFirstRowColumnIndexForMajorDiagonalOn(rowIndex, colIndex)) ||
-        this.hasMinorDiagonalConflictAt(this._getFirstRowColumnIndexForMinorDiagonalOn(rowIndex, colIndex))
+        // this.hasMajorDiagonalConflictAt(this._getFirstRowColumnIndexForMajorDiagonalOn(rowIndex, colIndex)) ||
+        // this.hasMinorDiagonalConflictAt(this._getFirstRowColumnIndexForMinorDiagonalOn(rowIndex, colIndex))
+        this.hasMajorDiagonalConflictAt(rowIndex, colIndex) ||
+        this.hasMinorDiagonalConflictAt(rowIndex, colIndex)
       );
     },
 
@@ -89,6 +91,7 @@
     },
 
     getMajor: function(row = 0, col = 0) {
+      
       var board = this.rows();
       var size = board.length;
       if (col === 0) {
@@ -103,7 +106,7 @@
           rowArr.push(board[j][j + col]);
         }
         return rowArr;
-    }
+      }
     },
 
     getMinor: function(row = 0, col = 0) {
@@ -169,7 +172,14 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(row, col) {
-
+      if (row > col) {
+        row = row - col;
+        col = 0;
+      } else {
+        col = col - row;
+        row = 0;
+      }
+      //console.log(row, col)
       return checkArray(this.getMajor(row, col)); // fixme
     },
 
@@ -181,7 +191,7 @@
           return true;
         }
       }
-       for (var i = 1; i < size; i++) {
+      for (var i = 0; i < size; i++) {
         if (this.hasMajorDiagonalConflictAt(0, i)) {
           return true;
         }
@@ -194,6 +204,15 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(row, col) {
+      var size = this.rows().length - 1;
+      if (row + col >= size) {
+        col = row + col - size;
+        row = size;
+      } else {
+        row = row + col;
+        col = 0;
+      }
+      console.log(row, col);
       return checkArray(this.getMinor(row, col)); // fixme
     },
 
@@ -205,12 +224,12 @@
           return true;
         }
       }
-       for (var i = 1; i < size; i++) {
-        if (this.hasMinorDiagonalConflictAt(3, i)) {
+      for (var i = 0; i < size; i++) {
+        if (this.hasMinorDiagonalConflictAt(0, i)) {
           return true;
         }
       }
-      return false // fixme
+      return false; // fixme
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
@@ -227,12 +246,14 @@
   };
 
   var checkArray = function(array) {
-    var found = false;
-    for (var i = 0; i < array.length; i++) {
-      if (array[i] && found) {
-        return true;
-      } else if (array[i] && !found) {
-        found = true;
+    if (Array.isArray(array)) {
+      var found = false;
+      for (var i = 0; i < array.length; i++) {
+        if (array[i] && found) {
+          return true;
+        } else if (array[i] && !found) {
+          found = true;
+        }
       }
     }
     return false;
