@@ -212,7 +212,6 @@
         row = row + col;
         col = 0;
       }
-      console.log(row, col);
       return checkArray(this.getMinor(row, col)); // fixme
     },
 
@@ -225,7 +224,8 @@
         }
       }
       for (var i = 0; i < size; i++) {
-        if (this.hasMinorDiagonalConflictAt(0, i)) {
+        if (this.hasMinorDiagonalConflictAt(size, i)) {
+          //console.log(i, "column in return true ");
           return true;
         }
       }
