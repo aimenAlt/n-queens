@@ -78,24 +78,25 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
-    hasRowConflictAt: function(rowIndex) {
-      console.log(this.get());
-      var row = this.get(rowIndex);
-      var found = false;
-      for (var i = 0; i < row.length; i++) {
-        if (row[i] === 1 && found === true) {
-          return true;
-        } else if (row[i] === 1 && found === false) {
-          found = true;
-        }
+        
+    getCol: function(colIndex) {
+      var array = [];
+      var board = this.rows();
+      for (var i = 0; i < board.length; i++) {
+        array.push(board[i][colIndex]);
       }
-      return false; // fixme
+      return array;
+    },
+    
+    hasRowConflictAt: function(rowIndex) {
+      var row = this.get(rowIndex);
+      return checkArray(row); // fixme
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      var currentBoard = this.rows();
-      for (var i = 0; i < currentBoard.length; i++) {
+      var currentBoardWidth = this.get(0).length; // check if an empty board
+      for (var i = 0; i < currentBoardWidth; i++) {
         if (this.hasRowConflictAt(i)) {
           return true;
         }
@@ -110,11 +111,18 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      var col = this.getCol(colIndex);
+      return checkArray(col);
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      var currentBoardHeight = this.rows().length;
+      for (var i = 0; i < currentBoardHeight; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -125,6 +133,7 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+      
       return false; // fixme
     },
 
@@ -159,6 +168,18 @@
         return 0;
       });
     });
+  };
+  
+  var checkArray = function(array) {
+    var found = false;
+    for (var i = 0; i < array.length; i++) {
+      if (array[i] && found) {
+        return true;
+      } else if (array[i] && !found) {
+        found = true;
+      }
+    }
+    return false;
   };
 
 }());
