@@ -78,7 +78,7 @@
     // --------------------------------------------------------------
     //
     // test if a specific row on this board contains a conflict
-        
+
     getCol: function(colIndex) {
       var array = [];
       var board = this.rows();
@@ -87,7 +87,7 @@
       }
       return array;
     },
-    
+
     getAllMajor: function() {
       var board = this.rows();
       var diagonalBoard = [];
@@ -107,29 +107,27 @@
       }
       return diagonalBoard;
     },
-    
+
     getAllMinor: function() {
       var board = this.rows();
       var diagonalBoard = [];
       for (var i = 0; i < board.length; i++) {
         var row = [];
-        for (var j = board.length - i - 1; j >= 0; j--) {
-          //console.log(i,j);
-          row.push(board[j + i][j]);
+        for (var j = 0; j < board.length - i; j++) {
+          row.push(board[j + i][board.length - j - 1]);
         }
-        diagonalBoard.push(row);
+        diagonalBoard[i + board.length - 1] = row;
       }
-      for (var i = 0; i < board.length - 1; i++) {
+      for (var i = 1; i < board.length; i++) {
         var row = [];
-        for (var j = 1; j < board.length - i; j++) {
-          //console.log(j, i);
-          row.push(board[j + i][j]);
+        for (var j = 0; j < board.length - i; j++) {
+          row.push(board[j][board.length - j - 1 - i]);
         }
-        diagonalBoard.push(row);
+        diagonalBoard[board.length - 1 - i] = row;
       }
       return diagonalBoard;
     },
-    
+
     hasRowConflictAt: function(rowIndex) {
       var row = this.get(rowIndex);
       return checkArray(row); // fixme
@@ -223,8 +221,9 @@
       });
     });
   };
-  
+
   var checkArray = function(array) {
+    //if (!array) return false;
     var found = false;
     for (var i = 0; i < array.length; i++) {
       if (array[i] && found) {
