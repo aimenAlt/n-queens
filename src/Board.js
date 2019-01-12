@@ -88,44 +88,40 @@
       return array;
     },
 
-    getAllMajor: function() {
+    getMajor: function(row = 0, col = 0) {
       var board = this.rows();
-      var diagonalBoard = [];
-      for (var i = board.length - 1; i >= 0; i--) {
-        var row = [];
-        for (var j = 0; j < board.length - i; j++) {
-          row.push(board[j][j + i]);
+      var size = board.length;
+      if (col === 0) {
+        var rowArr = [];
+        for (var j = 0; j < size - row; j++) {
+          rowArr.push(board[j + row][j]);
         }
-        diagonalBoard[i + board.length - 1] = row;
-      }
-      for (var i = 1; i < board.length; i++) {
-        var row = [];
-        for (var j = 0; j < board.length - i; j++) {
-          row.push(board[j + i][j]);
+        return rowArr;
+      } else {
+        var rowArr = [];
+        for (var j = 0; j < size - col; j++) {
+          rowArr.push(board[j][j + col]);
         }
-        diagonalBoard[board.length - i - 1] = row;
-      }
-      return diagonalBoard;
+        return rowArr;
+    }
     },
 
-    getAllMinor: function() {
+    getMinor: function(row = 0, col = 0) {
       var board = this.rows();
-      var diagonalBoard = [];
-      for (var i = 0; i < board.length; i++) {
-        var row = [];
-        for (var j = 0; j < board.length - i; j++) {
-          row.push(board[j + i][board.length - j - 1]);
+      var size = board.length;
+      if (col === 0) {
+        var rowArr1 = [];
+        for (var j = 0; j <= row; j++) {
+          rowArr1.push(board[row - j][j]);
         }
-        diagonalBoard[i + board.length - 1] = row;
-      }
-      for (var i = 1; i < board.length; i++) {
-        var row = [];
-        for (var j = 0; j < board.length - i; j++) {
-          row.push(board[j][board.length - j - 1 - i]);
+        return rowArr1;
+      } else {
+        var rowArr2 = [];
+        for (var j = 0; j < size - col; j++) {
+          rowArr2.push(board[size - j - 1][col + j]);
         }
-        diagonalBoard[board.length - 1 - i] = row;
+        return rowArr2;
       }
-      return diagonalBoard;
     },
 
     hasRowConflictAt: function(rowIndex) {
@@ -172,41 +168,49 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    hasMajorDiagonalConflictAt: function(array) {
-      return checkArray(array); // fixme
+    hasMajorDiagonalConflictAt: function(row, col) {
+
+      return checkArray(this.getMajor(row, col)); // fixme
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      var board = this.getAllMajor();
-      for (var i = 0; i < board.length; i++) {
-        if (this.hasMajorDiagonalConflictAt(board[i])) {
+      var size = this.rows().length;
+      for (var i = 0; i < size; i++) {
+        if (this.hasMajorDiagonalConflictAt(i, 0)) {
+          return true;
+        }
+      }
+       for (var i = 1; i < size; i++) {
+        if (this.hasMajorDiagonalConflictAt(0, i)) {
           return true;
         }
       }
       return false; // fixme
     },
-
-
 
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
-    hasMinorDiagonalConflictAt: function(array) {
-      return checkArray(array); // fixme
+    hasMinorDiagonalConflictAt: function(row, col) {
+      return checkArray(this.getMinor(row, col)); // fixme
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      var board = this.getAllMinor();
-      for (var i = 0; i < board.length; i++) {
-        if (this.hasMinorDiagonalConflictAt(board[i])) {
-          console.log('conflict at ' + i);
+      var size = this.rows().length;
+      for (var i = 0; i < size; i++) {
+        if (this.hasMinorDiagonalConflictAt(i, 0)) {
           return true;
         }
       }
-      return false; // fixme
+       for (var i = 1; i < size; i++) {
+        if (this.hasMinorDiagonalConflictAt(3, i)) {
+          return true;
+        }
+      }
+      return false // fixme
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
@@ -223,7 +227,6 @@
   };
 
   var checkArray = function(array) {
-    //if (!array) return false;
     var found = false;
     for (var i = 0; i < array.length; i++) {
       if (array[i] && found) {
