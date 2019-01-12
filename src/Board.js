@@ -88,6 +88,26 @@
       return array;
     },
     
+    getAllMajor: function() {
+      var board = this.rows();
+      var diagonalBoard = [];
+      for (var i = board.length - 1; i >= 0; i--) {
+        var row = [];
+        for (var j = 0; j < board.length - i; j++) {
+          row.push(board[j][j + i]);
+        }
+        diagonalBoard[i + board.length - 1] = row;
+      }
+      for (var i = 1; i < board.length; i++) {
+        var row = [];
+        for (var j = 0; j < board.length - i; j++) {
+          row.push(board[j + i][j]);
+        }
+        diagonalBoard[board.length - i - 1] = row;
+      }
+      return diagonalBoard;
+    },
+    
     hasRowConflictAt: function(rowIndex) {
       var row = this.get(rowIndex);
       return checkArray(row); // fixme
@@ -132,13 +152,18 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
-    hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      
-      return false; // fixme
+    hasMajorDiagonalConflictAt: function(array) {
+      return checkArray(array); // fixme
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      var board = this.getAllMajor();
+      for (var i = 0; i < board.length; i++) {
+        if (this.hasMajorDiagonalConflictAt(board[i])) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
