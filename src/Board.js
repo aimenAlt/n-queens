@@ -113,15 +113,16 @@
       var diagonalBoard = [];
       for (var i = 0; i < board.length; i++) {
         var row = [];
-        for (var j = board.length - 1; j >= 0; j--) {
-          row.push(board[j][j + i]);
+        for (var j = board.length - i - 1; j >= 0; j--) {
+          //console.log(i,j);
+          row.push(board[j + i][j]);
         }
         diagonalBoard.push(row);
       }
       for (var i = 0; i < board.length - 1; i++) {
         var row = [];
-        for (var j = 0; j < board.length - 1; j++) {
-          console.log(j, i);
+        for (var j = 1; j < board.length - i; j++) {
+          //console.log(j, i);
           row.push(board[j + i][j]);
         }
         diagonalBoard.push(row);
@@ -203,6 +204,7 @@
       var board = this.getAllMinor();
       for (var i = 0; i < board.length; i++) {
         if (this.hasMinorDiagonalConflictAt(board[i])) {
+          console.log('conflict at ' + i);
           return true;
         }
       }
