@@ -18,58 +18,55 @@
 window.findNRooksSolution = function(n) {
   var solution = false;
   var piece = 0;
-  //var coordinates = [0, 0];
   var boardSize = n;
   var workBoard = new Board({'n': n});
-var trace = 0;
   var nextPosition = function (r, c, board, count) {
-    trace++;
-    console.log('trace - ' + trace)
-    for (var row = r; row < n; row++) {
-      for (var col = c + 1; col < n; col++) {
-        board.togglePiece(row, col)
-        console.log(row, col)
-        //console.log('placed a piece');
-        console.log(board)
-        console.log(`placed a piece at r ${r} and  c ${c} with the board`, board.rows());
-        if (checkConflicts.call(board)) {
-          board.togglePiece(row, col);
+    var trigger = 0;
+    for (var row = 0; row < n; row++) {
+      if (trigger === 0) {
+        trigger = 1;
+        row = r;
+      }
+      for (var col = 0; col < n; col++) {
+        if (trigger === 1) {
+          trigger = 2;
+          col = c;
+          continue;
+        }
+        //if (n > 1) debugger;
+        this.togglePiece(row, col);
+        if (checkConflicts.call(this)) {
+          this.togglePiece(row, col);
           continue;
         }
         count++;
-        // console.log(count)
-        // console.log(count === n)
-        if (count === n) return board;
-        //if (row === n - 1 && col === n - 1 ) return board;
-        //console.log(row, col)
-        var tempBoard = nextPosition(row, col, board, count);
-        if (!tempBoard) {
-          board.togglePiece(row, col);
+        if (count === n) {
+          return this;
+        }
+        var tempBoard1 = nextPosition.call(this, row, col, workBoard, count);
+        if (!tempBoard1) {
+          this.togglePiece(row, col);
           count--;
         } else {
-          return tempBoard;
+          return tempBoard1;
         }
       }
     }
     return false;
   };
   var checkConflicts = function () {
-    console.log(this)
     var a = this.hasAnyColConflicts();
     var b = this.hasAnyRowConflicts();
-    var c = this.hasAnyMajorDiagonalConflicts();
-    var d = this.hasAnyMinorDiagonalConflicts();
-    console.log(a,b,c,d)
-    if (!a && !b && !c && !d) {
+    //var c = this.hasAnyMajorDiagonalConflicts();
+    //var d = this.hasAnyMinorDiagonalConflicts();
+    if (!a && !b) { // && !c && !d) {
       return false;
     }
     return true;
   };
 
-  var tempBoard = nextPosition(0, -1, workBoard, 0);
+  var tempBoard = nextPosition.call(workBoard, 0, -1, workBoard, 0);
 
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(tempBoard));
-  if (n === 0) return new Board({'n':0});
   return tempBoard.rows();
 };
 
@@ -77,55 +74,11 @@ var trace = 0;
 window.countNRooksSolutions = function(n) {
   var solution = undefined; //fixme
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
   return solutionCount;
 };
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n queens placed such that none of them can attack each other
 window.findNQueensSolution = function(n) {
-  var solution = false;
-  var piece = 0;
-  //var coordinates = [0, 0];
-  var boardSize = n;
-  var workBoard = new Board({'n': n});
-
-  var nextPosition = function (r, c, board, count) {
-    for (var row = r; row < n; row++) {
-      for (var col = c + 1; col < n; col++) {
-        board.togglePiece(row, col);
-        if (checkConflicts.call(board)) {
-          board.togglePiece(row, col);
-          continue;
-        }
-        count++;
-        if (row === n - 1 && col === n - 1) return board;
-        console.log(row, col)
-        var tempBoard = nextPosition(row, col, board, count);
-        if (!tempBoard) {
-          board.togglePiece(row, col);
-          count--;
-        } else {
-          return tempBoard;
-        }
-      }
-    }
-    return false;
-  };
-  var checkConflicts = function () {
-    console.log(this)
-    var a = this.hasAnyColConflicts();
-    var b = this.hasAnyRowConflicts();
-    var c = this.hasAnyMajorDiagonalConflicts();
-    var d = this.hasAnyMinorDiagonalConflicts();
-    console.log('queens')
-    console.log(a,b,c,d)
-    if (!a && !b && !c && !d) {
-      return false;
-    }
-    return true;
-  };
-
-  var tempBoard = nextPosition(0, -1, workBoard, 0);
 
   console.log('Single solution for ' + n + ' rooks:', JSON.stringify(tempBoard));
   return tempBoard;
