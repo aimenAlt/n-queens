@@ -134,6 +134,9 @@
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      if (this.get(0) === undefined) {
+        return false;
+      }
       var currentBoardWidth = this.get(0).length; // check if an empty board
       for (var i = 0; i < currentBoardWidth; i++) {
         if (this.hasRowConflictAt(i)) {
